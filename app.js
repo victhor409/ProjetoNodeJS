@@ -17,12 +17,16 @@ const Post = require( './models/Posts');
 
  //Rotas 
 
-app.get('/',function(req, res){
+app.get('/', function(req, res){
+    res.render('telainicial')
+})
+
+
+app.get('/home',function(req, res){
     Post.findAll({order:[['id','DESC']]}).then(function(posts){
         res.render('home',{posts: posts})
     })
 })
-
 
  app.get('/cad', function(req, res){
      
@@ -39,6 +43,24 @@ app.get('/',function(req, res){
          res.send("Houve um erro "+erro)
      })
  });
+
+ app.get('/delete/:id', function(req, res){
+     Post.destroy({where:{'id':req.params.id}}).then(function(){
+         res.send("Post deletado com sucesso")
+     }).catch(function(erro){
+        res.send("Esta Post Não existe! ")
+     })
+     
+ })
+
+ app.get('/update/:conteudo', function(req, res){
+     Post.update({conteudo:req.body.conteudo},
+        {where:{'id':req.params.id}}).then(function(){
+            res.redirect('/cad')
+        }).catch(function(erro){
+            res.send("Erro Update");
+        })
+ })
 
 
 //função de callback 
